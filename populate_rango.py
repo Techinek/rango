@@ -14,7 +14,16 @@ def populate():
         {'title': 'How to Think like a Computer Scientist',
          'url': 'http://www.greenteapress.com/thinkpython/'},
         {'title': 'Learn Python in 10 Minutes',
-         'url': 'http://www.korokithakis.net/tutorials/python/'}]
+         'url': 'http://www.korokithakis.net/tutorials/python/'},
+
+    ]
+
+    fastapi_pages = [
+        {'title': 'Official FastApi tutorial',
+         'url': 'https://fastapi.tiangolo.com/'},
+        {'title': 'Source code of FastApi',
+         'url': 'https://github.com/tiangolo/fastapi'}
+    ]
 
     django_pages = [
         {'title': 'Official Django Tutorial',
@@ -32,7 +41,9 @@ def populate():
 
     cats = {'Python': {'pages': python_pages},
             'Django': {'pages': django_pages},
-            'Other Frameworks': {'pages': other_pages}}
+            'Other Frameworks': {'pages': other_pages},
+            'FastApi': {'pages': fastapi_pages}
+            }
 
     for cat, cat_data in cats.items():
         c = add_cat(cat)
@@ -44,7 +55,7 @@ def populate():
             print(f'- {c}: {p}')
 
 
-def add_page(cat, title, url, views=0):
+def add_page(cat, title, url, views=1):
     p = Page.objects.get_or_create(category=cat, title=title)[0]
     p.url = url
     p.views = views
@@ -65,6 +76,10 @@ def add_cat(name):
     if c.name == 'Other Frameworks':
         c.likes = 16
         c.views = 32
+        c.save()
+    if c.name == 'FastApi':
+        c.likes = 8
+        c.views = 15
         c.save()
     return c
 
