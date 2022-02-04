@@ -5,7 +5,7 @@ from .views import about, index, show_category, add_page, add_category
 app_name = 'rango'
 
 urlpatterns = [
-    path('', index, name='home'),
+    path('', index, name='index'),
     path('about/', about, name='about'),
     path('category/<slug:category_name_slug>/', show_category,
          name='show_category'),
