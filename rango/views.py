@@ -1,4 +1,5 @@
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 
@@ -56,6 +57,12 @@ def user_login(request):
         return render(request, 'rango/login.html')
 
 
+@login_required()
+def user_logout(request):
+    logout(request)
+    return redirect(reverse('rango:index'))
+
+
 def index(request):
     categories = Category.objects.order_by('-likes')[:5]
     pages = Page.objects.order_by('-views')[:5]
@@ -85,6 +92,7 @@ def show_category(request, category_name_slug):
     return render(request, 'rango/category.html', context)
 
 
+@login_required()
 def add_page(request, category_name_slug):
     category = get_object_or_404(Category, slug=category_name_slug)
     if not category:
@@ -109,6 +117,7 @@ def add_page(request, category_name_slug):
     return render(request, 'rango/add_page.html', context)
 
 
+@login_required()
 def add_category(request):
     form = CategoryForm()
 
