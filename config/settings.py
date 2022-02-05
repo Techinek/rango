@@ -28,6 +28,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # 3-rd party
+    'registration',
+
     # Local
     'rango.apps.RangoConfig',
 ]
@@ -121,5 +124,10 @@ MEDIA_ROOT = MEDIA_DIR
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# Registration redux config
 
-LOGIN_URL = 'rango:login'
+REGISTRATION_OPEN = True
+REGISTRATION_AUTO_LOGIN = True
+LOGIN_REDIRECT_URL = 'rango:index'
+LOGIN_URL = 'auth_login'
+

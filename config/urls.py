@@ -5,5 +5,7 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('rango/', include('rango.urls'))
+    path('rango/', include('rango.urls')),
+    # alternative way of auth users using django-redux
+    path('accounts/', include('registration.backends.simple.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
