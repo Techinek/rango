@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from datetime import datetime
@@ -133,12 +134,29 @@ def add_category(request):
         form = CategoryForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect(reverse('rango:home'))
+            return redirect(reverse('rango:index'))
 
     context = {
         'form': form
     }
     return render(request, 'rango/add_category.html', context)
+
+
+def search(request):
+    result_list = []
+    query = ''
+
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+        if query:
+            result_list = Page.objects.filter(
+                Q(title__contains=query) | Q(category__name__contains=query))
+    context = {
+        'result_list': result_list,
+        'query': query
+    }
+
+    return render(request, 'rango/search.html', context)
 
 
 def get_server_side_cookie(request, cookie, default_val=None):
