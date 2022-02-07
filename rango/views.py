@@ -92,7 +92,7 @@ def about(request):
 
 def show_category(request, category_name_slug):
     category = get_object_or_404(Category, slug=category_name_slug)
-    category_pages = category.pages.all()
+    category_pages = category.pages.order_by('-views')
 
     context = {
         'category': category,
@@ -180,3 +180,15 @@ def visitor_cookie_handler(request):
         request.session['last_visit'] = last_visit_cookie
 
     request.session['visits'] = visits
+
+
+def goto_url(request):
+    if request.method == 'GET':
+        param_query = request.GET.get('page_id')
+        page = get_object_or_404(Page, pk=param_query)
+        if page:
+            page.views += 1
+            page.save()
+            return redirect(page.url)
+        else:
+            return redirect(reverse('rango:index'))
