@@ -40,6 +40,25 @@ def register(request):
                   )
 
 
+@login_required()
+def register_profile(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.FILES, request.POST)
+        if form.is_valid():
+            user_profile = form.save(commit=False)
+            user_profile.user = request.user
+            form.save()
+            return redirect(reverse('rango:index'))
+        else:
+            print(form.errors)
+
+    form = UserProfileForm()
+    context = {
+        'form': form
+    }
+    return render(request, 'rango/profile_registration.html', context)
+
+
 def user_login(request):
     if request.method == 'POST':
         username = request.POST.get('username')
