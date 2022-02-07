@@ -1,22 +1,28 @@
 from django.urls import path
 
-from .views import (about, index, show_category, add_page,
-                    add_category, register, user_login, user_logout,
-                    goto_url, register_profile)
+from .views import (AboutView, AddCategoryView, IndexView, ShowCategoryView,
+                    AddPageView, RegisterView, UserLogin, UserLogout,
+                    GotoView, RegisterProfile)
 
 app_name = 'rango'
 
 urlpatterns = [
-    path('', index, name='index'),
-    path('about/', about, name='about'),
-    path('category/<slug:category_name_slug>/', show_category,
+    path('', IndexView.as_view(), name='index'),
+    path('about/', AboutView.as_view(), name='about'),
+    path('category/<slug:category_name_slug>/', ShowCategoryView.as_view(),
          name='show_category'),
-    path('category/<slug:category_name_slug>/add-page/', add_page,
+    path('category/<slug:category_name_slug>/add-page/', AddPageView.as_view(),
          name='add_page'),
-    path('add-category/', add_category, name='add_category'),
-    path('register/', register, name='register'),
-    path('register-profile/', register_profile, name='register_profile'),
-    path('login/', user_login, name='login'),
-    path('logout/', user_logout, name='logout'),
-    path('goto/', goto_url, name='goto'),
+    path('add-category/', AddCategoryView.as_view(), name='add_category'),
+
+    # Old simple auth system with no 3-rd library packages for test purposes
+    path('old/register/', RegisterView.as_view(), name='register'),
+    path('old/login/', UserLogin.as_view(), name='login'),
+    path('old/logout/', UserLogout.as_view(), name='logout'),
+
+    # Working with django-redux only. Start from '/accounts/register/'
+    path('register-profile/', RegisterProfile.as_view(),
+         name='register_profile'),
+
+    path('goto/', GotoView.as_view(), name='goto'),
 ]
