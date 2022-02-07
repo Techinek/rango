@@ -91,10 +91,20 @@ def about(request):
 
 
 def show_category(request, category_name_slug):
+    result_list = []
+    query = ''
     category = get_object_or_404(Category, slug=category_name_slug)
     category_pages = category.pages.order_by('-views')
 
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+        if query:
+            result_list = category.pages.filter(
+                Q(title__contains=query) | Q(url__contains=query))
+
     context = {
+        'result_list': result_list,
+        'query': query,
         'category': category,
         'pages': category_pages
     }
@@ -140,23 +150,6 @@ def add_category(request):
         'form': form
     }
     return render(request, 'rango/add_category.html', context)
-
-
-def search(request):
-    result_list = []
-    query = ''
-
-    if request.method == 'POST':
-        query = request.POST['query'].strip()
-        if query:
-            result_list = Page.objects.filter(
-                Q(title__contains=query) | Q(category__name__contains=query))
-    context = {
-        'result_list': result_list,
-        'query': query
-    }
-
-    return render(request, 'rango/search.html', context)
 
 
 def get_server_side_cookie(request, cookie, default_val=None):

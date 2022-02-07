@@ -2,33 +2,78 @@
 {% load static %}
 
 {% block title_block %}
-    {% if category %}
-        {{ category.name }}
-    {% else %}
-        Unknown category
-    {% endif %}
+  {% if category %}
+    {{ category.name }}
+  {% else %}
+    Unknown category
+  {% endif %}
 {% endblock %}
 
 {% block body_block %}
-    {% if category %}
-        <div class="jumbotron p-4">
-            <div class="container">
-                <h1 class="jumbotron-heading">{{ category.name }}</h1>
-            </div>
-        </div>
-
-        {% if pages %}
-            <ul>
-                {% for page in pages %}
-                    <li><a href="{% url 'rango:goto'%}?page_id={{ page.id }}">{{ page.title }}</a>. Views: {{ page.views }}</li>
-                {% endfor %}
-            </ul>
-        {% else %}
-            <strong>No pages currently in category.</strong>
+  {% if category %}
+    <div class="jumbotron p-4">
+      <div class="container">
+        <h1 class="jumbotron-heading">{{ category.name }}</h1>
+      </div>
+    </div>
+    {% if user.is_authenticated %}
+      <div class="mb-2">
+        <form class="form-inline"
+              id="user-form"
+              method="post"
+              action="{% url 'rango:show_category' category.slug %}">
+          {% csrf_token %}
+          <div class="form-group">
+            <input class="form-control"
+                   type="text"
+                   size="50"
+                   name="query"
+                   value="{{ query }}"
+                   id="query"/>
+          </div>
+          <button class="btn btn-primary"
+                  type="submit"
+                  name="submit">Search
+          </button>
+        </form>
+      </div>
+      <div>
+        {% if result_list %}
+          <h2 class="mt-4">Results</h2>
+          <div class="list-group mb-2">
+            {% for result in result_list %}
+              <div class="list-group-item">
+                <h3 class="list-group-item-heading">
+                  <a href="{{ result.link }}">
+                    {{ result.title|safe|escape }}
+                  </a>
+                </h3>
+                <p class="list-group-item-text">
+                  {{ result.summary|safe|escape }}
+                </p>
+              </div>
+            {% endfor %}
+          </div>
         {% endif %}
-
-        <a href="{% url 'rango:add_page' category.slug %}">Add Page</a><br/>
-    {% else %}
-        The specified category does not exist.
+      </div>
     {% endif %}
+
+    {% if pages %}
+      <ul>
+        {% for page in pages %}
+          <li><a
+              href="{% url 'rango:goto' %}?page_id={{ page.id }}">{{ page.title }}</a>.
+            Views: {{ page.views }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <strong>No pages currently in category.</strong>
+    {% endif %}
+
+
+    <a class="btn btn-primary mt-3 mb-2"
+       href="{% url 'rango:add_page' category.slug %}">Add Page</a><br/>
+  {% else %}
+    The specified category does not exist.
+  {% endif %}
 {% endblock %}

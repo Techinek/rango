@@ -2,7 +2,7 @@ from django.urls import path
 
 from .views import (about, index, show_category, add_page,
                     add_category, register, user_login, user_logout,
-                    search, goto_url)
+                    goto_url)
 
 app_name = 'rango'
 
@@ -17,6 +17,5 @@ urlpatterns = [
     path('register/', register, name='register'),
     path('login/', user_login, name='login'),
     path('logout/', user_logout, name='logout'),
-    path('search/', search, name='search'),
     path('goto/', goto_url, name='goto'),
 ]
