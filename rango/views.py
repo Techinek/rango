@@ -203,6 +203,19 @@ class GotoView(View):
             return redirect(reverse('rango:index'))
 
 
+class LikeCategoryView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        category_id = request.GET.get('category_id')
+        category = get_object_or_404(Category, pk=int(category_id))
+        if category:
+            category.likes += 1
+            category.save()
+            return HttpResponse(category.likes)
+        else:
+            return HttpResponse(-1)
+
+
 def get_server_side_cookie(request, cookie, default_val=None):
     val = request.session.get(cookie)
     if not val:

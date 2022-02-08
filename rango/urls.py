@@ -25,5 +25,9 @@ urlpatterns = [
          name='register_profile'),
     path('profile/<username>/', views.ProfileView.as_view(), name='profile'),
     path('profiles/', views.ListProfilesView.as_view(), name='list_profiles'),
+
+    # Adding category likes and page views
     path('goto/', views.GotoView.as_view(), name='goto'),
+    path('like-category/', views.LikeCategoryView.as_view(),
+         name='like_category'),
 ]
