@@ -2,14 +2,15 @@ from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from .models import Category, Page
 from .forms import CategoryForm, PageForm, UserForm, UserProfileForm
+from .models import Category, Page, UserProfile
 
 
 class RegisterProfile(View):
@@ -29,6 +30,61 @@ class RegisterProfile(View):
             return redirect(reverse('rango:index'))
         context = {'form': form}
         return render(request, 'rango/profile_registration.html', context)
+
+
+class ProfileView(View):
+    def get_user_details(self, username):
+        user = get_object_or_404(User, username=username)
+        user_profile = UserProfile.objects.get_or_create(user=user)[0]
+        form = UserProfileForm({'website': user_profile.website,
+                                'picture': user_profile.picture})
+        return (user, user_profile, form)
+
+    @method_decorator(login_required)
+    def get(self, request, username):
+        try:
+            (user, user_profile, form) = self.get_user_details(username)
+        except TypeError:
+            return redirect(reverse('rango:index'))
+
+        context = {'user_profile': user_profile,
+                   'selected_user': user,
+                   'form': form}
+
+        return render(request, 'rango/profile.html', context)
+
+    @method_decorator(login_required)
+    def post(self, request, username):
+        try:
+            (user, user_profile, form) = self.get_user_details(username)
+        except TypeError:
+            return redirect(reverse('rango:index'))
+
+        if request.user == user:
+            form = UserProfileForm(request.POST,
+                                   request.FILES,
+                                   instance=user_profile)
+            if form.is_valid():
+                form.save(commit=True)
+                return redirect(reverse('rango:profile', args=[user,]))
+            else:
+                print(form.errors)
+            context = {'user_profile': user_profile,
+                       'selected_user': user,
+                       'form': form}
+            return render(request, 'rango/profile.html', context)
+        else:
+            return HttpResponse("You can change only your own profile")
+
+
+class ListProfilesView(View):
+    @method_decorator(login_required)
+    def get(self, request):
+        profiles = UserProfile.objects.all()
+        context = {
+            'user_profile_list': profiles
+        }
+        return render(request, 'rango/list_profiles.html', context)
 
 
 class IndexView(View):
