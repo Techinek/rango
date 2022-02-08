@@ -8,7 +8,7 @@ from .views import MyRegistrationView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('rango/', include('rango.urls')),
+    path('', include('rango.urls')),
     # alternative way of auth users using django-redux
     path('accounts/register/', MyRegistrationView.as_view(),
          name='registration_register'),
