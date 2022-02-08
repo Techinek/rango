@@ -9,6 +9,7 @@ from django.shortcuts import get_object_or_404, redirect, render, reverse
 from django.utils.decorators import method_decorator
 from django.views import View
 
+from .helpers import get_server_side_cookie, get_category_list
 from .forms import CategoryForm, PageForm, UserForm, UserProfileForm
 from .models import Category, Page, UserProfile
 
@@ -216,11 +217,23 @@ class LikeCategoryView(View):
             return HttpResponse(-1)
 
 
-def get_server_side_cookie(request, cookie, default_val=None):
-    val = request.session.get(cookie)
-    if not val:
-        val = default_val
-    return val
+class CategorySuggestionView(View):
+    def get(self, request):
+        if 'suggestion' in request.GET:
+            suggestion = request.GET.get('suggestion')
+        else:
+            suggestion = ''
+
+        category_list = get_category_list(max_results=8,
+                                          starts_with=suggestion)
+        if len(category_list) == 0:
+            category_list = Category.objects.order_by('-likes')
+
+        context = {
+            'categories': category_list
+        }
+
+        return render(request, 'rango/categories.html', context)
 
 
 def visitor_cookie_handler(request):

@@ -26,8 +26,9 @@ urlpatterns = [
     path('profile/<username>/', views.ProfileView.as_view(), name='profile'),
     path('profiles/', views.ListProfilesView.as_view(), name='list_profiles'),
 
-    # Adding category likes and page views
+    # Complementary views: for adding likes, views, filtering categories
     path('goto/', views.GotoView.as_view(), name='goto'),
     path('like-category/', views.LikeCategoryView.as_view(),
          name='like_category'),
+    path('suggest/', views.CategorySuggestionView.as_view(), name='suggest'),
 ]
