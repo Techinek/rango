@@ -39,7 +39,7 @@ class ProfileView(View):
         user_profile = UserProfile.objects.get_or_create(user=user)[0]
         form = UserProfileForm({'website': user_profile.website,
                                 'picture': user_profile.picture})
-        return (user, user_profile, form)
+        return user, user_profile, form
 
     @method_decorator(login_required)
     def get(self, request, username):
@@ -67,7 +67,7 @@ class ProfileView(View):
                                    instance=user_profile)
             if form.is_valid():
                 form.save(commit=True)
-                return redirect(reverse('rango:profile', args=[user,]))
+                return redirect(reverse('rango:profile', args=[user, ]))
             else:
                 print(form.errors)
             context = {'user_profile': user_profile,

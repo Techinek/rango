@@ -19,4 +19,3 @@ def get_category_list(max_results=0, starts_with=''):
             category_list = category_list[:max_results]
 
     return category_list
-
