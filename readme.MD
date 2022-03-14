@@ -6,7 +6,7 @@ Simple search and category filtering are also included.
 ## Installation:
 1. Clone the repository:
 ```
-https://github.com/Techinek/rango.git
+git clone https://github.com/Techinek/rango.git
 ```
 
 2. Install all the needed packages:
