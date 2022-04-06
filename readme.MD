@@ -26,5 +26,4 @@ python populate_rango.py
 ```
 python manage.py runserver
 ```
-###### This is the pet project of the book Tango With Django 2 by Leif Azzopardi and David Maxwel.
 
